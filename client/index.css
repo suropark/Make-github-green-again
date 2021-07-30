@@ -1,0 +1,11 @@
+.app {
+  flex-wrap: wrap;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 700px;
+}
+.id-input {
+  margin: 50px;
+}
