@@ -1,54 +1,83 @@
 let state = {};
-let githubId = localStorage.getItem('githubContributionChecker');
 
-const render = () => {
-  document.querySelector('.app').innerHTML = `
-    ${renderInput()}
-    ${renderText()} `;
-  githubCheck().then(() => {
-    document.querySelector('.app').innerHTML = `
-    ${renderInput()}
-    ${renderText()} `;
-  });
-};
-
-const githubCheck = async () => {
-  await axios
-    .get('https://29i6agp450.execute-api.ap-northeast-2.amazonaws.com/user', {
-      params: {
-        user: localStorage.getItem('githubContributionChecker'),
-      },
-    })
-    .then((response) => {
+const fetchGithubStatus = async (userId) => {
+  await fetch(
+    `https://29i6agp450.execute-api.ap-northeast-2.amazonaws.com/user?user=${userId}`,
+  )
+    .then((response) => response.json())
+    .then((data) => {
       const today = new Date().toISOString().slice(0, 10);
-      state = { count: response.data[today] };
+      state = { ...state, count: data[today] };
     });
 };
-const renderText = () => {
-  if (!githubId) {
-    return `등록할 깃허브 아이디를 입력해주세요!`;
-  } else if (!githubId || state.count === undefined) {
-    return `데이터를 가져오고 있습니다!`;
-  } else return `오늘은 ${state.count} 개의 contribution을 했어요! `;
-};
-// document.querySelector('.logout').addEventListener('click')
+const render = () => {
+  chrome.storage.sync.get('githubId', function ({ githubId }) {
+    if (!githubId) {
+      document.querySelector('.app').innerHTML = `<input
+      class="id-input"
+      type="text"
+      placeholder="Github 아이디"
+      />
+      <button class="login-btn">입력</button>
+     
+      등록할 깃허브 아이디를 입력해주세요!`;
+      document.querySelector('.login-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        chrome.storage.sync.set(
+          {
+            githubId: document.querySelector('.id-input').value,
+          },
+          () => render(),
+        );
+      });
+    } else {
+      document.querySelector('.app').innerHTML = `<div><input
+      disabled
+      class="id-input"
+      type="text"
+      value="${githubId} 님"
+      /><button class="logout-btn" disabled> 로그아웃 </button> </div>
+      데이터를 가져오고 있습니다! `;
+      document
+        .querySelector('.logout-btn')
+        .addEventListener('click', (e) =>
+          chrome.storage.sync.remove('githubId', () => render()),
+        );
 
-const renderInput = () => {
-  if (githubId) {
-    return `<div><input
+      fetchGithubStatus(githubId).then(() => {
+        document.querySelector('.app').innerHTML = `<div><input
         disabled
         class="id-input"
         type="text"
         value="${githubId} 님"
-      /><button class="logout"> 로그아웃 </button> </div>`;
-  } else {
-    return `<div><input
-      class="id-input"
-      type="text"
-      placeholder="Github 아이디"
-    />
-    <button class="login">입력</button>
-    </div>`;
-  }
+        /><button class="logout-btn"> 로그아웃 </button> </div>
+        오늘은 ${state.count} 개의 contribution을 했어요! `;
+        document
+          .querySelector('.logout-btn')
+          .addEventListener('click', (e) =>
+            chrome.storage.sync.remove('githubId', () => render()),
+          );
+      });
+    }
+  });
 };
+// 데이터를 가져오고 있습니다!`;
+// else if (!githubId || state.count === undefined) {
+//   document.querySelector('.app').innerHTML = `<div><input
+//     disabled
+//     class="id-input"
+//     type="text"
+//     value="${githubId} 님"
+//     /><button class="logout-btn"> 로그아웃 </button> </div>
+
+//   document
+//     .querySelector('.logout-btn')
+//     .addEventListener('click', (e) =>
+//       chrome.storage.sync.remove('githubId', () => render()),
+//     );
+// } else {
+
+// }
+// return githubId ? githubId : false;
+//
 render();
