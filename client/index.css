@@ -1,11 +1,45 @@
-.app {
+html,
+body {
+  margin: 0;
+
+  height: 100%;
+
+  overflow: hidden;
+}
+
+/* ------ */
+
+.github-box {
   flex-wrap: wrap;
   flex-direction: column;
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 700px;
+  /* margin: auto; */
+}
+.link-box {
+  display: inline;
+  width: 50%;
+  float: left;
+  /* flex-wrap: wrap; */
+  /* flex-direction: column; */
+  /* display: flex; */
+  /* float: left; */
+  /* align-items: center; */
+  /* margin: auto; */
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+}
+#github-img1 {
+  padding: 10px;
 }
 .id-input {
-  margin: 50px;
+  margin: 15px 20px;
+}
+a {
+  text-decoration: none;
 }
