@@ -1,7 +1,7 @@
 {
-  "name": "green-github-checker",
+  "name": "Make-github-green-again",
   "version": "1.0.0",
-  "description": "",
+  "description": "chrome extension checking today's contribution count and providing useful links etc..",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/suropark/green-github-checker.git"
+    "url": "git+https://github.com/suropark/Make-github-green-again.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/suropark/green-github-checker/issues"
+    "url": "https://github.com/suropark/Make-github-green-again/issues"
   },
-  "homepage": "https://github.com/suropark/green-github-checker#readme",
+  "homepage": "https://github.com/suropark/Make-github-green-again#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
     "got": "^11.8.2"
