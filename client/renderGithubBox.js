@@ -1,7 +1,9 @@
 let state = {};
 
 const fetchGithubStatus = async (userId) => {
-  await fetch(`${API}/user?user=${userId}`)
+  await fetch(
+    `https://29i6agp450.execute-api.ap-northeast-2.amazonaws.com/user?user=${userId}`,
+  )
     .then((response) => response.json())
     .then((data) => {
       const today = new Date().toISOString().slice(0, 10);
