@@ -59,3 +59,59 @@ cheerio랑 got 모듈 이용해서 데이터 크롤링하는 거 성공했고, .
 1번 탭에는 **기본 링크** 2번 탭에는 **커스텀 링크** 로 해서 두 개 모두 보여주는 방식이다.
 
 일단은 첫 번째 방식으로 만들어서 사용해보고 불편함이 있으면 두 번째 방식으로 변경할 예정이다.
+
+
+---
+5번째
+
+유저가 링크를 직접 추가하고 삭제할 수 있는 기능을 추가했다. 
+
+### 추가 기능
+
+```
+document
+        .querySelector('.add-submit-btn')
+        .addEventListener('click', (e) => {
+          e.preventDefault();
+          chrome.storage.sync.get('link', function ({ link }) {
+            if (link) {
+              chrome.storage.sync.set(
+                {
+                  link: [
+                    ...link,
+                    {
+                      index: link.length + 5,
+                      name: document.querySelector('.name-input').value,
+                      url: document.querySelector('.url-input').value,
+                    },
+                  ],
+                },
+                () => renderLinkBox(),
+              );
+            } 
+```
+추가 버튼을 누르면 버튼이 input 2개와 제출 버튼으로 변하고 링크 추가는 구조 분해 할당 문법을 활용했다.
+
+### 삭제 기능
+
+```
+const delBtnEvent = () => {
+  let delBtns = document.querySelectorAll('.del-btn');
+  for (let i = 0; i < delBtns.length; i++) {
+    delBtns[i].addEventListener('click', (e) => {
+      chrome.storage.sync.get('link', ({ link }) => {
+        chrome.storage.sync.set(
+          {
+            link: link.filter((item) => item.index !== +e.target.id),
+          },
+          () => renderLinkBox(),
+        );
+      });
+    });
+  }
+};
+
+```
+
+원래 생각한 링크 객체는 `{name: '이름', url: '주소', img: '이미지 url?'}` 이었는데, 삭제 기능을 구현하려고 하다보니 객체에 index를 추가 했다. index를 직접 추가하는 방법 말고 다른 방법도 있기는 할 것 같은데 일단 이렇게 했다. index 값을 삭제 버튼의 id로 주고 배열 메소드 filter 문법을 활용했다.
+
