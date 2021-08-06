@@ -1,9 +1,7 @@
 let state = {};
 
 const fetchGithubStatus = async (userId) => {
-  await fetch(
-    `https://29i6agp450.execute-api.ap-northeast-2.amazonaws.com/user?user=${userId}`,
-  )
+  await fetch(`${API}/user?user=${userId}`)
     .then((response) => response.json())
     .then((data) => {
       const today = new Date().toISOString().slice(0, 10);
@@ -14,7 +12,7 @@ const renderGithubBox = () => {
   chrome.storage.sync.get('githubId', function ({ githubId }) {
     if (!githubId) {
       document.querySelector('.github-box').innerHTML = `
-      <img id="github-img1" src='./GitHub-Mark-32px.png'/>
+      <img id="github-img1" src='./img/GitHub-Mark-32px.png'/>
       등록할 깃허브 아이디를 입력해주세요!
       <div>
       <input
@@ -40,7 +38,7 @@ const renderGithubBox = () => {
       });
     } else {
       document.querySelector('.github-box').innerHTML = `
-      <img id="github-img1" src='./GitHub-Mark-32px.png'/>
+      <img id="github-img1" src='./img/GitHub-Mark-32px.png'/>
       데이터를 가져오고 있습니다!
       <div>
       <input
@@ -59,7 +57,7 @@ const renderGithubBox = () => {
 
       fetchGithubStatus(githubId).then(() => {
         document.querySelector('.github-box').innerHTML = `
-        <img id="github-img1" src='./GitHub-Mark-32px.png'/>
+        <img id="github-img1" src='./img/GitHub-Mark-32px.png'/>
         오늘은 ${state.count} 개의 contribution을 했어요! 
         <div>
         <input

@@ -6,6 +6,9 @@ body {
 
   overflow: hidden;
 }
+h2 {
+  text-align: center;
+}
 
 /* ------ */
 
@@ -16,6 +19,20 @@ body {
   align-items: center;
   /* margin: auto; */
 }
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  align-items: center;
+}
+#github-img1 {
+  padding: 10px;
+}
+.id-input {
+  margin: 15px 20px;
+}
+/* ---- */
 .link-box {
   display: inline;
   width: 50%;
@@ -27,19 +44,27 @@ body {
   /* align-items: center; */
   /* margin: auto; */
 }
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  align-items: center;
-}
-#github-img1 {
-  padding: 10px;
-}
-.id-input {
-  margin: 15px 20px;
-}
 a {
   text-decoration: none;
+}
+.del-btn {
+  float: right;
+  color: black;
+}
+.add-btn {
+  height: 10px;
+  width: 10px;
+  color: #1eaedb;
+}
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.name-input {
+  width: 33%;
+  margin: 0 10px 5px;
+}
+.url-input {
+  margin: 0 10px 5px;
 }
