@@ -32,15 +32,21 @@ h2 {
 .id-input {
   margin: 15px 20px;
 }
+/* bottom */
+
+.bottom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
 /* ---- */
 .link-box {
-  display: inline;
   width: 50%;
-  float: left;
+  left: 0;
   /* flex-wrap: wrap; */
   /* flex-direction: column; */
   /* display: flex; */
-  /* float: left; */
   /* align-items: center; */
   /* margin: auto; */
 }
@@ -57,9 +63,10 @@ a {
   color: #1eaedb;
 }
 .add-form {
-  display: flex;
+  position: absolute;
+  /* display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: center; */
 }
 .name-input {
   width: 33%;
@@ -67,4 +74,26 @@ a {
 }
 .url-input {
   margin: 0 10px 5px;
+}
+/* todo-box */
+.todo-box {
+  text-align: right;
+  word-break: keep-all;
+  width: 40%;
+  right: 0;
+}
+.todo-add-btn {
+  white-space: nowrap;
+}
+.todo-label {
+  display: inline-block;
+  white-space: nowrap;
+}
+.todo-checkbox {
+  vertical-align: middle;
+  margin: auto;
+  margin-right: 4px;
+}
+.todo-label span {
+  margin-right: 4px;
 }

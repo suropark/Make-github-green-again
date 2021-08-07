@@ -1,14 +1,14 @@
-let addBtnClicked = false;
-// chrome.storage.sync.remove('link');
+let linkAddBtnClicked = false;
+// chrome.storage.sync.remove('todo');
 // chrome.storage.sync.get('link', ({ link }) => console.log(link));
-const demoLink = [
+const defaultLink = [
   { index: 1, name: '깃허브', url: 'https://www.github.com', img: '' },
   { index: 2, name: '노션', url: 'https://www.notion.so', img: '' },
   { index: 3, name: '네이버', url: 'https://www.naver.com', img: '' },
   { index: 4, name: '구글', url: 'https://google.com', img: '' },
 ];
-const addBtnRender = () => {
-  return addBtnClicked
+const linkAddBtnRender = () => {
+  return linkAddBtnClicked
     ? `
     <form class="add-form">
     <input type="text" class="name-input" placeholder="이름"/>
@@ -17,11 +17,11 @@ const addBtnRender = () => {
     </form>
    `
     : `
-    <li><a href="#" class="add-btn">추가하기  </a></li>
+    <li><a href="#" class="add-btn">추가하기</a></li>
   `;
 };
-const addBtnEvent = () => {
-  addBtnClicked
+const linkAddBtnEvent = () => {
+  linkAddBtnClicked
     ? document
         .querySelector('.add-submit-btn')
         .addEventListener('click', (e) => {
@@ -56,13 +56,15 @@ const addBtnEvent = () => {
               );
             }
           });
-          addBtnClicked = false;
+          linkAddBtnClicked = false;
           renderLinkBox();
         })
     : document.querySelector('.add-btn').addEventListener('click', () => {
-        addBtnClicked = true;
+        linkAddBtnClicked = true;
         renderLinkBox();
       });
+
+  linkAddBtnClicked ? document.querySelector('.name-input').focus() : null;
 };
 const delBtnEvent = () => {
   let delBtns = document.querySelectorAll('.del-btn');
@@ -79,43 +81,20 @@ const delBtnEvent = () => {
     });
   }
 };
-// <img class="add-btn" src="plus-solid.svg" alt="add button"> 추가하기
 
 const renderLinkBox = () => {
   chrome.storage.sync.get('link', function ({ link }) {
-    if (link && link.length) {
-      document.querySelector('.link-box').innerHTML = `${link
-        .map((item) => {
-          return `<li><a href=${item.url}>${item.name}</a>  <a id=${item.index} class="del-btn" href="#">삭제 </a></li>`;
-        })
-        .join('')}
-        ${addBtnRender()}
+    let concatenatedLinks = link ? defaultLink.concat(link) : defaultLink;
+    document.querySelector('.link-box').innerHTML = `${concatenatedLinks
+      .map((item) => {
+        return `<li><a href=${item.url}>${item.name}</a>  <a id=${item.index} class="del-btn" href="#">삭제 </a></li>`;
+      })
+      .join('')}
+        ${linkAddBtnRender()}
         `;
-      addBtnEvent();
-      delBtnEvent();
-    } else {
-      document.querySelector('.link-box').innerHTML = `
-      ${demoLink
-        .map((item) => {
-          return `<li><a href=${item.url}>${item.name}</a> <a id=${item.index} class="del-btn" href="#">삭제 </a> </li>`;
-        })
-        .join('')}
-        ${addBtnRender()}
-        `;
-      addBtnEvent();
-      delBtnEvent();
-    }
+    linkAddBtnEvent();
+    delBtnEvent();
   });
 };
 
 renderLinkBox();
-// 1. storage check -> 저장된 데이터 있는지 없는지
-// 1-1 없으면 default 값으로 제공
-
-// 2. 있으면 가져와서 추가시켜주기
-// for (let index = 0; index < link.length; index++) {
-//   const _name = link[index].name;
-//   const _url = link[index].url;
-//   const _img = link[index].img;
-//   console.log(_name, _url, _img);
-// }
