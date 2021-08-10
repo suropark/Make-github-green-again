@@ -25,36 +25,31 @@ const linkAddBtnEvent = () => {
     ? document
         .querySelector('.add-submit-btn')
         .addEventListener('click', (e) => {
+          let name = document.querySelector('.name-input').value;
+          let url = document.querySelector('.url-input').value;
           e.preventDefault();
           chrome.storage.sync.get('link', function ({ link }) {
-            if (link) {
-              chrome.storage.sync.set(
-                {
-                  link: [
-                    ...link,
-                    {
-                      index: link.length + 5,
-                      name: document.querySelector('.name-input').value,
-                      url: document.querySelector('.url-input').value,
-                    },
-                  ],
-                },
-                () => renderLinkBox(),
-              );
-            } else {
-              chrome.storage.sync.set(
-                {
-                  link: [
-                    {
-                      index: 5,
-                      name: document.querySelector('.name-input').value,
-                      url: document.querySelector('.url-input').value,
-                    },
-                  ],
-                },
-                () => renderLinkBox(),
-              );
-            }
+            chrome.storage.sync.set(
+              {
+                link: link
+                  ? [
+                      ...link,
+                      {
+                        index: link.length + 5,
+                        name,
+                        url,
+                      },
+                    ]
+                  : [
+                      {
+                        index: 5,
+                        name,
+                        url,
+                      },
+                    ],
+              },
+              () => renderLinkBox(),
+            );
           });
           linkAddBtnClicked = false;
           renderLinkBox();
@@ -66,34 +61,18 @@ const linkAddBtnEvent = () => {
 
   linkAddBtnClicked ? document.querySelector('.name-input').focus() : null;
 };
-const delBtnEvent = () => {
-  let delBtns = document.querySelectorAll('.del-btn');
-  for (let i = 0; i < delBtns.length; i++) {
-    delBtns[i].addEventListener('click', (e) => {
-      chrome.storage.sync.get('link', ({ link }) => {
-        chrome.storage.sync.set(
-          {
-            link: link.filter((item) => item.index !== +e.target.id),
-          },
-          () => renderLinkBox(),
-        );
-      });
-    });
-  }
-};
-
+function linkList(item) {
+  return `<li><a href=${item.url}>${item.name}</a>  <a id=${item.index} class="del-btn" href="#">삭제 </a></li>`;
+}
 const renderLinkBox = () => {
   chrome.storage.sync.get('link', function ({ link }) {
     let concatenatedLinks = link ? defaultLink.concat(link) : defaultLink;
-    document.querySelector('.link-box').innerHTML = `${concatenatedLinks
-      .map((item) => {
-        return `<li><a href=${item.url}>${item.name}</a>  <a id=${item.index} class="del-btn" href="#">삭제 </a></li>`;
-      })
-      .join('')}
-        ${linkAddBtnRender()}
-        `;
+
+    renderList('.link-box', concatenatedLinks, linkList, linkAddBtnRender);
+
+    delEventToElement('.del-btn', 'click', 'link', renderLinkBox);
+
     linkAddBtnEvent();
-    delBtnEvent();
   });
 };
 

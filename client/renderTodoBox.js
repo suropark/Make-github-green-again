@@ -19,35 +19,28 @@ const todoAddBtnEvent = () => {
     ? document
         .querySelector('.todo-submit-btn')
         .addEventListener('click', (e) => {
-          let todoName = document.querySelector('.todo-input').value;
           e.preventDefault();
+          let todoName = document.querySelector('.todo-input').value;
           chrome.storage.sync.get('todo', function ({ todo }) {
-            if (todo) {
-              chrome.storage.sync.set(
-                {
-                  todo: [
-                    ...todo,
-                    {
-                      index: todo.length + 1,
-                      name: todoName,
-                    },
-                  ],
-                },
-                () => renderTodoBox(),
-              );
-            } else {
-              chrome.storage.sync.set(
-                {
-                  todo: [
-                    {
-                      index: 1,
-                      name: todoName,
-                    },
-                  ],
-                },
-                () => renderTodoBox(),
-              );
-            }
+            chrome.storage.sync.set(
+              {
+                todo: todo
+                  ? [
+                      ...todo,
+                      {
+                        index: todo.length + 1,
+                        name: todoName,
+                      },
+                    ]
+                  : [
+                      {
+                        index: 1,
+                        name: todoName,
+                      },
+                    ],
+              },
+              () => renderTodoBox(),
+            );
           });
           todoAddBtnClicked = false;
           renderTodoBox();
@@ -59,34 +52,18 @@ const todoAddBtnEvent = () => {
 
   todoAddBtnClicked ? document.querySelector('.todo-input').focus() : null;
 };
-const todoDelBtnEvent = () => {
-  let todos = document.querySelectorAll('.todo-checkbox');
-  for (let i = 0; i < todos.length; i++) {
-    todos[i].addEventListener('change', (e) => {
-      chrome.storage.sync.get('todo', ({ todo }) => {
-        chrome.storage.sync.set(
-          {
-            todo: todo.filter((item) => item.index !== +e.target.id),
-          },
-          () => renderTodoBox(),
-        );
-      });
-    });
-  }
-};
+function todoCheckBox(item) {
+  return `<label class="todo-label"> <input class="todo-checkbox" id=${item.index} type="checkbox"/><span>${item.name}</span></label>`;
+}
 const renderTodoBox = () => {
   chrome.storage.sync.get('todo', function ({ todo }) {
-    document.querySelector('.todo-box').innerHTML = `
-        ${todo
-          .map((item) => {
-            return `<label class="todo-label"> <input class="todo-checkbox" id=${item.index} type="checkbox"/><span>${item.name}</span></label>`;
-          })
-          .join('')}
-          ${todoAddBtnRender()}
-  `;
+    let checkTodo = todo ?? [];
+
+    renderList('.todo-box', checkTodo, todoCheckBox, todoAddBtnRender);
+
+    delEventToElement('.todo-checkbox', 'change', 'todo', renderTodoBox);
+
     todoAddBtnEvent();
-    todoDelBtnEvent();
   });
 };
-
 renderTodoBox();
